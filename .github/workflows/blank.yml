@@ -34,10 +34,15 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         run: dotnet test --no-build --verbosity normal
-      - name: Build and deploy with Docker Compose
+      - name: Install Docker Compose
         run: |
-          docker compose down
-          docker-compose up --build -d
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose version
+      - name: Stop containers
+        run: docker compose down
+      - name: Build containers
+        run: docker-compose up --build -d
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
